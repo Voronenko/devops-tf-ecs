@@ -29,6 +29,8 @@ aws_sg_cluster: ${aws_security_group.vpc_security_groups_cluster.id}
 aws_sg_datalayer: ${aws_security_group.vpc_security_groups_datalayer.id}
 aws_sg_bastion: ${aws_security_group.vpc_security_groups_bastion.id}
 
+aws_app_loadbalancer: ${aws_lb.ecs.name}
+
 vpc_availability_zone_t1: "${data.aws_availability_zones.available.names[0]}"
 vpc_availability_zone_t2: "${data.aws_availability_zones.available.names[1]}"
 

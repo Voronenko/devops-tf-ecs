@@ -1,3 +1,7 @@
+
+# If you duplicate application load balancer creation in ansible
+# Make sure for properites to match, to prevent infrastructure drift
+
 resource "aws_lb" "ecs" {
   name               = "ecs-${local.env}-alb"
   internal           = false

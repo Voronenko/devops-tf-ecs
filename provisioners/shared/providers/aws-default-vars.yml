@@ -1,0 +1,50 @@
+
+# options
+option_use_auto_scaling_group: 1
+option_use_yml_config: false  # set true for coreos - causes /etc/ecs/ecs.config creation
+option_use_manual_cluster_instances: 0
+network_options_no_private: true
+
+# /options
+
+readable_env_name: "ecs-default"
+
+ecsServiceRole_arn: "arn:aws:iam::672574731473:role/ecs_service_role_default"
+ecsInstanceRole_arn: "arn:aws:iam::672574731473:role/ecs_instance_role_default"
+
+aws_region: "us-east-1"
+
+aws_vpc_id: vpc-07855560d29b28994
+
+aws_vpc_pubsubnet1: subnet-017402e3c5827e75b
+aws_vpc_pubsubnet2: subnet-0e5e334db062bd9d1
+aws_vpc_privsubnet1: subnet-02c01e58137f789fd
+aws_vpc_privsubnet2: subnet-0350575cd751eb186
+
+aws_sg_elb: sg-0b687c3a0a57257db
+aws_sg_cluster: sg-08af76dac5ef161e3
+aws_sg_datalayer: sg-07fb21b885e49b2fa
+aws_sg_bastion: sg-0d0ab35bf7007ef15
+
+aws_app_loadbalancer: ecs-default-alb
+
+vpc_availability_zone_t1: "us-east-1a"
+vpc_availability_zone_t2: "us-east-1b"
+
+aws_primary_route_table: rtb-002ba64c47fea78ff
+aws_igw: igw-0e92338fdf1aada4d
+
+default_autoscaling_min_size: 1
+default_autoscaling_desired_capacity: 1
+default_autoscaling_max_size: 4
+
+
+ec2_key: "voronenko_info"
+
+ecs_cluster_name: "ecs-default" # ALLOWED TO BE SET EXTERNALLY
+# ecs_engine_auth_data_token: "SPECIFY"  # todo: SET IT FROM SECURE VARS , cat ~/.docker/config.json
+# ecs_engine_auth_data_email: "SPECIFY"  # todo:  SET IT FROM SECURE VARS
+
+
+
+

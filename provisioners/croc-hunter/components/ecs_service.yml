@@ -1,0 +1,59 @@
+---
+# input:
+# ecs_service  service definition for target group
+
+  - name: Check service details
+    ecs_service_facts:
+      cluster: "{{ ecs_service.ecs_cluster_name }}"
+      service: "{{ ecs_service.service_name }}"
+      details: true
+    register: ecs_service_facts
+
+  - debug: var="ecs_service_facts"
+
+  - set_fact:
+      target_service_found: "{{ ecs_service_facts.services | length > 0 }}"
+
+  - set_fact:
+      targetGroupArn: "{{ lookup('aws_targetgroup_arn_fromname', aws_region, ecs_service.elb_target_group) }}"
+
+
+  - name: "ECS | create service definition"
+    ecs_service:
+      state: "present"
+      name: "{{ ecs_service.service_name }}"
+      cluster: "{{ ecs_service.ecs_cluster_name }}"
+      task_definition: "{{ ecs_task_definition_family }}:{{ ecs_taskdefinition_output.taskdefinition.revision }}"
+      desired_count: "{{ ecs_task_definition_count }}"
+      role: "{{ ecsServiceRole_arn }}"
+      load_balancers:
+#          # example for classic load balancer
+#        - loadBalancerName: "{{ aws_app_loadbalancer }}"
+#          containerName: "{{ ecs_service_container_name }}"
+#          containerPort: 8080
+          # example for application load balancer
+        - targetGroupArn: "{{ targetGroupArn }}"
+          containerName: "{{ ecs_service_container_name }}"
+          containerPort: "{{ ecs_service.service_port }}"
+    when: not target_service_found
+    register: ecs_service_output
+
+  - block:
+
+    - set_fact:
+        detected_loadbalancers: "{{ ecs_service_facts.services[0].loadBalancers }}"
+
+    - name: "ECS | update service definition"
+      ecs_service:
+        state: "present"
+        name: "{{ ecs_service.service_name }}"
+        cluster: "{{ ecs_service.ecs_cluster_name }}"
+        task_definition: "{{ ecs_task_definition_family }}:{{ ecs_taskdefinition_output.taskdefinition.revision }}"
+        desired_count: "{{ ecs_task_definition_count }}"
+        role: "{{ ecsServiceRole_arn }}"
+        load_balancers: "{{ detected_loadbalancers }}"
+      register: ecs_service_output
+
+    when: target_service_found
+
+  - debug: var=ecs_service_output verbosity=4

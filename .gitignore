@@ -4,4 +4,4 @@
 *.tfstate.backup
 */roles/sa-*
 */**/roles/sa-*
-
+*.retry

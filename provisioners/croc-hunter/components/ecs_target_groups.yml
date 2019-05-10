@@ -1,0 +1,39 @@
+---
+# input:
+# ecs_service  service definition for target group
+# option_modify_elb_targets   default no
+
+  - name:  "Detect facts about target group"
+    elb_target_group_facts:
+      names:
+        - "{{ ecs_service.elb_target_group }}"
+    register: ecs_service_tg_facts_raw
+
+  - set_fact:
+      target_group_found: "{{ ecs_service_tg_facts_raw.target_groups | length > 0 }}"
+
+  - debug: var="ecs_service_tg_facts"
+
+  - name:  "Creating target group {{ecs_service.elb_target_group | default('N/A')}}"
+    elb_target_group:
+      name: "{{ecs_service.elb_target_group}}"
+      state: present
+      protocol: "{{ecs_service.service_instance_protocol| default('http')}}"
+      port: "{{ecs_service.service_port}}"
+      vpc_id: "{{aws_vpc_id}}"
+      health_check_path: "{{ecs_service.health_check.ping_path | default('/')}}"
+      health_check_interval: "{{ecs_service.health_check.health_check_interval | default(30)}}"
+      health_check_timeout: "{{ecs_service.health_check.health_check_timeout | default(5)}}"
+      healthy_threshold_count: "{{ecs_service.health_check.healthy_threshold | default(2)}}"
+      unhealthy_threshold_count: "{{ecs_service.health_check.unhealthy_threshold | default(10)}}"
+      health_check_port: "{{ecs_service.health_check.health_check_port | default(omit)}}"
+      health_check_protocol: http # TODO
+      successful_response_codes: "{{ecs_service.health_check.successful_response_codes | default('200,250-260,301-308,401,404')}}"
+      modify_targets: "{{ option_modify_elb_targets | default('no') }}"
+      wait_timeout: 600
+      wait: True
+      tags:
+        Environment: "{{ readable_env_name }}"
+    when: ecs_service.elb_target_group is defined and not target_group_found
+    tags:
+      - create

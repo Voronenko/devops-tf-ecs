@@ -1,0 +1,51 @@
+---
+- hosts: all
+  gather_facts: False
+
+  vars:
+    - root_dir: "{{ playbook_dir }}"
+    - shared_dir: "{{ playbook_dir }}/../shared"
+
+  vars_files:
+    - cluster_defaults.yml
+
+  pre_tasks:
+    - debug: msg="Pre tasks section for {{ansible_host}}"
+
+    - name: gather facts
+      setup:
+
+    - debug: msg="Checking for {{shared_dir}}/common_pretasks.yml"
+
+    - name: Check for common pretasks
+      local_action: stat path="{{shared_dir}}/common_pretasks.yml"
+      register: common_pretasks_exists
+      tags: always
+
+    - name: Include common pretasks
+      include_tasks: "{{shared_dir}}/common_pretasks.yml"
+      when: common_pretasks_exists.stat.exists == true
+      tags: always
+
+  tasks:
+
+    - debug: msg="Tasks section"
+
+    - include_tasks: components/ecs_target_groups.yml
+      vars:
+        ecs_service: "{{ croco_service }}"
+
+    - include_tasks: components/ecs_app_loadbalancer.yml
+      vars:
+        ecs_service: "{{ croco_service }}"
+
+    - include_tasks: components/ecs_app_loadbalancer_rule.yml
+      vars:
+        loadbalancer: "{{ croco_service }}"
+        loadbalancer_rules: "{{ croco_service_listeners }}"
+
+    - include_tasks: components/ecs_task_def.yml
+
+    - include_tasks: components/ecs_service.yml
+      vars:
+        ecs_service: "{{ croco_service }}"

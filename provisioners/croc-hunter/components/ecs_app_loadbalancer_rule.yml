@@ -1,0 +1,20 @@
+---
+
+# input:
+# loadbalancer       load balancer definition
+# loadbalancer_rules  Rule to add to load balancer
+
+  - debug: var="loadbalancer_rules"
+
+  - name: Load balancer | Injecting load balancer rule
+    elb_application_lb:
+      name: "{{loadbalancer.elb_name}}"
+      state: present
+      security_groups: "{{loadbalancer.security_group_ids}}"
+      subnets: "{{ loadbalancer.subnets }}"
+      region: "{{aws_region}}"
+      scheme: internet-facing
+      purge_listeners: no
+      purge_tags: no
+      listeners: "{{ loadbalancer_rules | default([]) }}"
+    with_items: "{{registered_services | default([])}}"

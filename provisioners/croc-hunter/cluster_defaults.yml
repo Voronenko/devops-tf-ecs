@@ -1,0 +1,42 @@
+---
+
+ecs_task_definition_family: crocohunter
+ecs_task_definition_count: 1
+
+ecs_service_name: crocohunter
+ecs_service_container_name: crocohunter
+
+croco_service: {
+  ecs_cluster_name: "{{ecs_cluster_name}}",
+  elb_name: "{{ aws_app_loadbalancer }}",
+  elb_type: "application",
+  elb_role: "primary",
+  elb_target_group: "{{ecs_cluster_name}}-tg-croco",
+  service_name: "{{ ecs_service_name }}",
+  service_port: 8080,
+  subnets: "{{aws_vpc_pubsubnet1}},{{aws_vpc_pubsubnet2}}",
+  security_group_ids: "{{aws_sg_elb}}",
+  task_count: "1",
+  health_check: {
+    ping_protocol: http, # options are http, https, ssl, tcp
+    ping_port: 8080,
+    ping_path: "/healthz", # not required for tcp or ssl
+    response_timeout: 60, # seconds
+    interval: 300, # seconds
+    unhealthy_threshold: 2,
+    healthy_threshold: 10
+  }
+}
+
+croco_service_listeners:
+    - Protocol: HTTP
+      Port: 80
+      DefaultActions:
+        - Type: forward
+          TargetGroupName: "{{ croco_service.elb_target_group }}"
+      Rules: []
+
+
+
+registered_services:
+  - "{{ croco_service }}"

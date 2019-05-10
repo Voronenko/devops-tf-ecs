@@ -1,7 +1,7 @@
 # if we go via autoscaling ....
 
 resource "aws_launch_configuration" "ecs_launch_configuration" {
-  name = "ecs_launch_configuration"
+  name = "ecs_launch_configuration_${local.env}"
   image_id = "${data.aws_ami.ecs_ami.image_id}"
   instance_type = "${local.app_instance_type}"
   iam_instance_profile = "${aws_iam_instance_profile.ecs_instance_profile.id}"
@@ -12,9 +12,9 @@ resource "aws_launch_configuration" "ecs_launch_configuration" {
     delete_on_termination = true
   }
 
-  lifecycle {
-    create_before_destroy = true
-  }
+//  lifecycle {
+//    create_before_destroy = true
+//  }
 
   security_groups = [ "${aws_security_group.vpc_security_groups_cluster.id}" ]
   associate_public_ip_address = "true"
@@ -24,7 +24,7 @@ resource "aws_launch_configuration" "ecs_launch_configuration" {
 }
 
 resource "aws_autoscaling_group" "ecs_autoscaling_group" {
-  name = "ecs_autoscaling_group"
+  name = "ecs_autoscaling_group_${local.env}"
   max_size = "${var.scaling_max_instance_size}"
   min_size = "${var.scaling_min_instance_size}"
   vpc_zone_identifier = ["${aws_subnet.pub_subnet1.id}", "${aws_subnet.pub_subnet2.id}"]
@@ -34,7 +34,7 @@ resource "aws_autoscaling_group" "ecs_autoscaling_group" {
   tags = [
             {
             "key" = "Name"
-            "value" = "ecs runner ${local.env}"
+            "value" = "ecs_autoscaling_group_${local.env}"
             "propagate_at_launch" = true
             },
             {
@@ -43,4 +43,5 @@ resource "aws_autoscaling_group" "ecs_autoscaling_group" {
             "propagate_at_launch" = true
             }
          ]
+  depends_on = ["aws_launch_configuration.ecs_launch_configuration"]
 }

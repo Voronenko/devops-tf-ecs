@@ -1,0 +1,18 @@
+---
+# input:
+# ecs_service  service definition for load balancer
+
+  - name: Load balancer | Creation of the application one for the primary service {{ecs_service.elb_name}}
+    elb_application_lb:
+      name: "{{ecs_service.elb_name}}"
+      state: present
+      security_groups: "{{ecs_service.security_group_ids}}"
+      subnets: "{{ ecs_service.subnets }}"
+      region: "{{aws_region}}"
+      scheme: internet-facing
+      purge_listeners: no
+      purge_tags: no
+      tags:
+        Environment: "{{ env }}"
+    when: ecs_service.elb_name is defined and ecs_service.elb_type == "application" and ecs_service.elb_role is defined and ecs_service.elb_role == "primary"
+

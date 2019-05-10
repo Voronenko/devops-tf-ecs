@@ -1,0 +1,18 @@
+---
+  - name: "ECS | croco task definition"
+    ecs_taskdefinition:
+      state: "present"
+      family: "{{ ecs_task_definition_family }}"
+      region: "{{ aws_region }}"
+      containers:
+        - name: "{{ ecs_service_container_name }}"
+          cpu: "100"
+          essential: true
+          image: "voronenko/docker-sample-image:47372c4"
+          memory: 300
+          portMappings:
+            - containerPort: 8080
+              hostPort: 8080
+    register: ecs_taskdefinition_output
+
+  - debug: var=ecs_taskdefinition_output verbosity=4

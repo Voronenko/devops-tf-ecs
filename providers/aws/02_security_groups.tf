@@ -82,7 +82,7 @@ resource "aws_security_group" "vpc_security_groups_cluster" {
 
   ingress {
     from_port   = 0
-    to_port     = 0
+    to_port     = 65535
     protocol    = "tcp"
     security_groups = ["${aws_security_group.vpc_security_groups_elb.id}"]
   }
