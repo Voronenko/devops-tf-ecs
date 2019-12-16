@@ -56,12 +56,12 @@ variable "ec2_key" {
 
 locals {
 
-  env = "${lookup(var.workspace_to_environment_map, terraform.workspace, "dev")}"
-  region = "${var.environment_to_region_map[local.env]}"
+  env = lookup(var.workspace_to_environment_map, terraform.workspace, "dev")
+  region = var.environment_to_region_map[local.env]
   readable_env_name = "ecs-${local.env}"
 
 
   ecs_cluster_name = "${var.ecs_cluster}-${terraform.workspace}"
 
-  app_instance_type = "${var.environment_to_instance_size_map[local.env]}"
+  app_instance_type = var.environment_to_instance_size_map[local.env]
 }

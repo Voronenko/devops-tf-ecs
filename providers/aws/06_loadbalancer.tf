@@ -6,8 +6,8 @@ resource "aws_lb" "ecs" {
   name               = "ecs-${local.env}-alb"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = ["${aws_security_group.vpc_security_groups_elb.id}"]
-  subnets            = ["${aws_subnet.pub_subnet1.id}", "${aws_subnet.pub_subnet2.id}"]
+  security_groups    = [aws_security_group.vpc_security_groups_elb.id]
+  subnets            = [aws_subnet.pub_subnet1.id, aws_subnet.pub_subnet2.id]
   enable_deletion_protection = true
 
 //  access_logs {
@@ -17,6 +17,6 @@ resource "aws_lb" "ecs" {
 //  }
 
   tags = {
-    Environment = "${local.env}"
+    Environment = local.env
   }
 }

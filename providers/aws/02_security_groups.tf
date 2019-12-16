@@ -1,7 +1,7 @@
 resource "aws_security_group" "vpc_security_groups_elb" {
   name = "${local.readable_env_name}-public-ELB"
   description = "public access"
-  vpc_id = "${aws_vpc.app_vpc.id}"
+  vpc_id = aws_vpc.app_vpc.id
 
   ingress {
     from_port   = 80
@@ -27,7 +27,7 @@ resource "aws_security_group" "vpc_security_groups_elb" {
 
   tags {
     Name = "${local.readable_env_name}-public-ELB"
-    env = "${local.env}"
+    env = local.env
   }
 
 

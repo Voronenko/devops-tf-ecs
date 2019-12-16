@@ -57,6 +57,6 @@ YAML
 
 
 resource "local_file" "shared_provider_vars" {
-  content     = "${local.aws_commons_yml}"
+  content     = local.aws_commons_yml
   filename = "${path.root}/../../provisioners/shared/providers/aws-${local.env}-vars.yml"
 }
