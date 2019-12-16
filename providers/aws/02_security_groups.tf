@@ -25,7 +25,7 @@ resource "aws_security_group" "vpc_security_groups_elb" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags {
+  tags = {
     Name = "${local.readable_env_name}-public-ELB"
     env = local.env
   }
@@ -52,7 +52,7 @@ resource "aws_security_group" "vpc_security_groups_bastion" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags {
+  tags = {
     Name = "${local.readable_env_name}-public-BASTION"
     env = "${local.env}"
   }
@@ -95,7 +95,7 @@ resource "aws_security_group" "vpc_security_groups_cluster" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags {
+  tags = {
     Name = "${local.readable_env_name}-private-CLUSTER"
     env = "${local.env}"
   }
@@ -117,7 +117,7 @@ resource "aws_security_group" "vpc_security_groups_datalayer" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags {
+  tags = {
     Name = "${local.readable_env_name}-private-DATALAYER"
     env = "${local.env}"
   }

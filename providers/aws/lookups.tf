@@ -11,7 +11,7 @@ data "aws_ami" "ecs_ami" {
 data "template_file" "user_data" {
   template = file("${path.module}/files/default-user-data.sh")
 
-  vars {
+  vars = {
     ecs_cluster_name = local.ecs_cluster_name
   }
 }
