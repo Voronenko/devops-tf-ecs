@@ -15,9 +15,9 @@ readable_env_name: "${local.readable_env_name}"
 ecsServiceRole_arn: "${aws_iam_role.ecs_service_role.arn}"
 ecsInstanceRole_arn: "${aws_iam_role.ecs_instance_role.arn}"
 
-aws_region: "${local.region}"
+aws_region: "${local.aws_region}"
 
-aws_vpc_id: ${aws_vpc.app_vpc.id}
+aws_vpc_id: ${aws_vpc.main.id}
 
 aws_vpc_pubsubnet1: ${aws_subnet.pub_subnet1.id}
 aws_vpc_pubsubnet2: ${aws_subnet.pub_subnet2.id}
@@ -29,7 +29,7 @@ aws_sg_cluster: ${aws_security_group.vpc_security_groups_cluster.id}
 aws_sg_datalayer: ${aws_security_group.vpc_security_groups_datalayer.id}
 aws_sg_bastion: ${aws_security_group.vpc_security_groups_bastion.id}
 
-aws_app_loadbalancer: ${aws_lb.ecs.name}
+aws_app_loadbalancer: "${aws_alb.alb_main.name}"
 
 vpc_availability_zone_t1: "${data.aws_availability_zones.available.names[0]}"
 vpc_availability_zone_t2: "${data.aws_availability_zones.available.names[1]}"
@@ -44,7 +44,7 @@ default_autoscaling_max_size: 4
 
 ec2_key: "${var.ec2_key}"
 
-ecs_cluster_name: "${aws_ecs_cluster.ecs_cluster.name}" # ALLOWED TO BE SET EXTERNALLY
+ecs_cluster_name: "${aws_ecs_cluster.main.name}" # ALLOWED TO BE SET EXTERNALLY
 # ecs_engine_auth_data_token: "SPECIFY"  # todo: SET IT FROM SECURE VARS , cat ~/.docker/config.json
 # ecs_engine_auth_data_email: "SPECIFY"  # todo:  SET IT FROM SECURE VARS
 

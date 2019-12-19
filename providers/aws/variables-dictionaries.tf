@@ -12,11 +12,11 @@ variable "workspace_to_environment_map" {
 variable "environment_to_region_map" {
   type = "map"
   default = {
-    default = "us-east-1"
-    dev     = "us-east-1"
-    qa      = "us-east-1"
-    staging = "us-east-1"
-    prod    = "us-east-1"
+    default = "eu-west-1"
+    dev     = "eu-west-1"
+    qa      = "eu-west-1"
+    staging = "eu-west-1"
+    prod    = "eu-west-1"
   }
 }
 

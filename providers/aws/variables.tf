@@ -36,7 +36,7 @@ variable "scaling_min_instance_size" {
 }
 
 variable "scaling_desired_capacity" {
-  default = 2
+  default = 1
 }
 
 
@@ -56,8 +56,10 @@ variable "ec2_key" {
 
 locals {
 
+  app_name = "crochunter-fargate"
+
   env = lookup(var.workspace_to_environment_map, terraform.workspace, "dev")
-  region = var.environment_to_region_map[local.env]
+  aws_region = var.environment_to_region_map[local.env]
   readable_env_name = "ecs-${local.env}"
 
 

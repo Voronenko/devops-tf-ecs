@@ -1,7 +1,7 @@
 resource "aws_security_group" "vpc_security_groups_elb" {
   name = "${local.readable_env_name}-public-ELB"
   description = "public access"
-  vpc_id = aws_vpc.app_vpc.id
+  vpc_id = aws_vpc.main.id
 
   ingress {
     from_port   = 80
@@ -14,6 +14,14 @@ resource "aws_security_group" "vpc_security_groups_elb" {
   ingress {
     from_port   = 443
     to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # Debug http
+  ingress {
+    from_port   = 8080
+    to_port     = 8080
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -36,7 +44,7 @@ resource "aws_security_group" "vpc_security_groups_elb" {
 resource "aws_security_group" "vpc_security_groups_bastion" {
   name = "${local.readable_env_name}-public-BASTION"
   description = "public access"
-  vpc_id = "${aws_vpc.app_vpc.id}"
+  vpc_id = aws_vpc.main.id
 
   ingress {
     from_port   = 22
@@ -54,7 +62,7 @@ resource "aws_security_group" "vpc_security_groups_bastion" {
 
   tags = {
     Name = "${local.readable_env_name}-public-BASTION"
-    env = "${local.env}"
+    env = local.env
   }
 
 
@@ -63,7 +71,7 @@ resource "aws_security_group" "vpc_security_groups_bastion" {
 resource "aws_security_group" "vpc_security_groups_cluster" {
   name = "${local.readable_env_name}-private-CLUSTER"
   description = "ECS Cluster"
-  vpc_id = "${aws_vpc.app_vpc.id}"
+  vpc_id = aws_vpc.main.id
 
   # # FOR DEBUG PURPOSES ONLY, ELIMINATE ON PROD
   ingress {
@@ -97,7 +105,7 @@ resource "aws_security_group" "vpc_security_groups_cluster" {
 
   tags = {
     Name = "${local.readable_env_name}-private-CLUSTER"
-    env = "${local.env}"
+    env = local.env
   }
 
 
@@ -106,7 +114,7 @@ resource "aws_security_group" "vpc_security_groups_cluster" {
 resource "aws_security_group" "vpc_security_groups_datalayer" {
   name = "${local.readable_env_name}-private-DATALAYER"
   description = "Private data layer - RDS, elasticache, mongo, etc"
-  vpc_id = "${aws_vpc.app_vpc.id}"
+  vpc_id = aws_vpc.main.id
 
   # SPECIFY INGRESS RULES
 
@@ -119,7 +127,7 @@ resource "aws_security_group" "vpc_security_groups_datalayer" {
 
   tags = {
     Name = "${local.readable_env_name}-private-DATALAYER"
-    env = "${local.env}"
+    env = local.env
   }
 
 
